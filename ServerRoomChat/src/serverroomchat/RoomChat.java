@@ -5,7 +5,7 @@
  */
 package serverroomchat;
 
-
+import remoto.IRemoto;
 
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
@@ -21,19 +21,17 @@ import java.util.logging.Logger;
  * @author cassiano-ncc
  */
 public class RoomChat implements IRoomChat{
-    ArrayList<String> users;
-    ArrayList<String> host;
-    static Iremoto obj;
+    ArrayList<Users> users;
+    static IRemoto obj;
     @Override
     public void sendMsg(String usrName, String msg) {
         for (int i = 0; i < users.size(); i++) {
-            String usuario = users.get(i);
-            String destino = host.get(i);
             Registry registry;
+            String destino = users.get(i).host;
             try {
                 registry = LocateRegistry.getRegistry(destino,2020);
-                obj = (deliveryMsg) registry.lookup("deliveryMsg");
-                = obj.;
+                obj = (IRemoto) registry.lookup("deliveryMsg");
+                obj.deliverMsg(usrName, msg);
             }catch(Exception e){
                     System.out.println("erro:" + e);
                     e.printStackTrace();
@@ -43,13 +41,13 @@ public class RoomChat implements IRoomChat{
 
     @Override
     public void joinRoom(String usrName, String host) {
-       users.add(usrName);
-       this.host.add(host);
+       Users usuario = new Users(usrName, host);
+       users.add(usuario);
     }
 
     @Override
     public void leaveRoom(String usrName) {
-        users.remove(usrName);
+        
     }
 
     @Override

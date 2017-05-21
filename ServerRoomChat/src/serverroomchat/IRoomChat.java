@@ -5,10 +5,9 @@
  */
 package serverroomchat;
 
-/**
- *
- * @author cassiano
- */
+import java.util.ArrayList;
+
+
 public interface IRoomChat extends java.rmi.Remote{
     public void sendMsg(String usrName, String msg);
     public void joinRoom(String usrName);

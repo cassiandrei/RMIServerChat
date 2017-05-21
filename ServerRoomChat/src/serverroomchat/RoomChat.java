@@ -5,12 +5,15 @@
  */
 package serverroomchat;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author cassiano-ncc
  */
 public class RoomChat implements IRoomChat{
-
+    ArrayList<String> users;
+    
     @Override
     public void sendMsg(String usrName, String msg) {
         
@@ -18,12 +21,12 @@ public class RoomChat implements IRoomChat{
 
     @Override
     public void joinRoom(String usrName) {
-       
+       users.add(usrName);
     }
 
     @Override
     public void leaveRoom(String usrName) {
-        
+        users.remove(usrName);
     }
 
     @Override

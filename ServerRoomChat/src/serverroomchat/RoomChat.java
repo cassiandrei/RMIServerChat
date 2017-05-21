@@ -22,6 +22,7 @@ import java.util.logging.Logger;
  */
 public class RoomChat implements IRoomChat{
     ArrayList<Users> users;
+    String roomName;
     static IRemoto obj;
     @Override
     public void sendMsg(String usrName, String msg) {

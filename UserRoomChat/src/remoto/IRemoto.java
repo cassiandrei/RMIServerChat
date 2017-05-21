@@ -17,6 +17,6 @@ public interface IRemoto {
     public void joinRoom(String usrName, String host) throws RemoteException;
     public void leaveRoom(String usrName) throws RemoteException;
     public void closeRoom() throws RemoteException;
-    public ArrayList<RoomChat> getRooms() throws RemoteException;
+    public ArrayList<Object> getRooms() throws RemoteException;
     public void createRoom(String roomName) throws RemoteException;
 }

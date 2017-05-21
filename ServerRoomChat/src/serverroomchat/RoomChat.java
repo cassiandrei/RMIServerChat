@@ -35,7 +35,7 @@ public class RoomChat implements IRoomChat{
             }catch(Exception e){
                     System.out.println("erro:" + e);
                     e.printStackTrace();
-            }   
+            }
         }
     }
 
@@ -47,12 +47,11 @@ public class RoomChat implements IRoomChat{
 
     @Override
     public void leaveRoom(String usrName) {
-        
+        for (int i = 0; i < users.size(); i++) {
+            Users get =  users.get(i);
+            if(get.name.equals(usrName)){
+                users.remove(get);
+            }
+        }
     }
-
-    @Override
-    public void closeRoom() {
-       
-    }
-    
 }

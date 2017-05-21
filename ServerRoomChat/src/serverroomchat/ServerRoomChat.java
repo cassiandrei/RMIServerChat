@@ -29,4 +29,9 @@ public class ServerRoomChat implements IServerRoomChat{
         
     }
     
+    @Override
+    public void closeRoom() {
+       
+    }
+    
 }

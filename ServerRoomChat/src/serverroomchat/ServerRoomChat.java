@@ -26,12 +26,19 @@ public class ServerRoomChat implements IServerRoomChat{
 
     @Override
     public void createRoom(String roomName) {
-        
+        RoomChat nova = new RoomChat(roomName);
+        salas.add(nova);
     }
     
+    
     @Override
-    public void closeRoom() {
-       
+    public void closeRoom(String nome) {
+        for (int i = 0; i < salas.size(); i++) {
+            RoomChat get =  salas.get(i);
+            if(get.RoomName.equals(nome)){
+                salas.remove(get);
+            }
+        }
     }
     
 }

@@ -16,5 +16,5 @@ import java.util.ArrayList;
 public interface IServerRoomChat extends Remote{
     public ArrayList<RoomChat> getRooms() throws RemoteException;
     public void createRoom(String roomName) throws RemoteException;
-    public void closeRoom() throws RemoteException;
+    public void closeRoom(String nome) throws RemoteException;
 }

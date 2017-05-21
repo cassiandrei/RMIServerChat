@@ -21,8 +21,14 @@ import java.util.logging.Logger;
  * @author cassiano-ncc
  */
 public class RoomChat implements IRoomChat{
+    String RoomName;
     ArrayList<Users> users;
     static IRemoto obj;
+    
+    RoomChat(String nome){
+        RoomName = nome;
+    }
+    
     @Override
     public void sendMsg(String usrName, String msg) {
         for (int i = 0; i < users.size(); i++) {

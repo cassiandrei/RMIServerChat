@@ -5,10 +5,15 @@
  */
 package remoto;
 
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import serverroomchat.RoomChat;
+
 /**
  *
  * @author cassiano
  */
-public interface IRemoto {
-    
+public interface IRemoto extends Remote {
+    public void deliverMsg(String senderName, String msg) throws RemoteException;  
 }

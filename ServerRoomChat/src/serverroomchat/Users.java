@@ -10,5 +10,11 @@ package serverroomchat;
  * @author cassiano
  */
 public class Users {
+    String host;
+    String name;
     
+    Users(String name, String host){
+        this.host = host;
+        this.name = name;
+    }
 }

@@ -17,15 +17,13 @@ import remoto.IRemoto;
  */
 public class UserChat implements IUserChat {
 
-    String usrName;
+    static String usrName;
     static IRemoto obj;
     static Registry registry;
-    static ArrayList<Object> rooms;
+    public static ArrayList<Object> rooms;
     
 
     public static void main(String[] args) {
-        UserFrame userFrame = new UserFrame();
-        userFrame.setVisible(true);
         String IPServer = JOptionPane.showInputDialog("Qual o IP do servidor?");
         try {
             registry = LocateRegistry.getRegistry(IPServer, 2020);
@@ -35,8 +33,8 @@ public class UserChat implements IUserChat {
             System.out.println("erro:" + e);
             e.printStackTrace();
         }
-        
-        
+        UserFrame userFrame = new UserFrame(rooms,usrName, obj);
+        userFrame.setVisible(true);
     }
 
     @Override

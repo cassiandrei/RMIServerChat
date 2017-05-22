@@ -21,13 +21,12 @@ import java.util.logging.Logger;
  * @author cassiano-ncc
  */
 public class RoomChat implements IRoomChat{
-    String RoomName;
     ArrayList<Users> users;
     String roomName;
     static IRemoto obj;
     
     RoomChat(String nome){
-        RoomName = nome;
+        roomName = nome;
     }
     
     @Override

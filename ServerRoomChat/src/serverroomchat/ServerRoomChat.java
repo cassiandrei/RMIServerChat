@@ -20,7 +20,7 @@ public class ServerRoomChat implements IServerRoomChat{
         ServerFrame janela = new ServerFrame();
         janela.setVisible(true);
         /* Qaundo cria nova sala
-        String roomName = JOptionPane.showInputDialog("Qual o nome da nova sala?");
+        //String roomName = JOptionPane.showInputDialog("Qual o nome da nova sala?");
         try{
             Registry r = java.rmi.registry.LocateRegistry.createRegistry(2020);
             r.rebind("Servidor",new RoomChat(roomName));
@@ -46,7 +46,7 @@ public class ServerRoomChat implements IServerRoomChat{
     public void closeRoom(String nome) {
         for (int i = 0; i < salas.size(); i++) {
             RoomChat get =  salas.get(i);
-            if(get.RoomName.equals(nome)){
+            if(get.roomName.equals(nome)){
                 salas.remove(get);
             }
         }

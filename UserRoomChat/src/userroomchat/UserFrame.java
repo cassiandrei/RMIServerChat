@@ -5,15 +5,33 @@
  */
 package userroomchat;
 
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import remoto.IRemoto;
+
 /**
  *
  * @author Arthur
  */
 public class UserFrame extends javax.swing.JFrame {
 
-    /**
-     * Creates new form UserFrame
-     */
+    
+    public ArrayList<Object> roomList;
+    public String usrName;
+    public IRemoto obj;
+    
+    public UserFrame(ArrayList<Object> roomList,String usrName, IRemoto obj) {
+        this.roomList = roomList;
+        this.usrName = usrName;
+        this.obj = obj;
+        initComponents();
+        for (Object roomList1 : roomList) { // adiciono a lista de salas para o jComboBox
+            listaSalas.addItem(roomList1);
+        }
+    }
+    
     public UserFrame() {
         initComponents();
     }
@@ -27,7 +45,7 @@ public class UserFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jComboBox1 = new javax.swing.JComboBox<>();
+        listaSalas = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -39,11 +57,14 @@ public class UserFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jLabel1.setText("Lista de Salas");
 
         jButton1.setText("Join");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                userJoin(evt);
+            }
+        });
 
         jButton2.setText("Create Room");
 
@@ -75,7 +96,7 @@ public class UserFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(listaSalas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(35, 35, 35)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
@@ -93,7 +114,7 @@ public class UserFrame extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(listaSalas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
                 .addGap(18, 18, 18)
                 .addComponent(jButton2)
@@ -108,6 +129,15 @@ public class UserFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void userJoin(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userJoin
+        this.obj = (IRemoto)roomList.get(0); //falta encontrar a posição da roomList
+        try {
+            obj.joinRoom(usrName, "host");
+        } catch (RemoteException ex) {
+            Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_userJoin
 
     /**
      * @param args the command line arguments
@@ -148,11 +178,11 @@ public class UserFrame extends javax.swing.JFrame {
     private javax.swing.JTextArea chat;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JComboBox<Object> listaSalas;
     // End of variables declaration//GEN-END:variables
 }

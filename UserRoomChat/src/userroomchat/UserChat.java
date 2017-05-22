@@ -22,23 +22,26 @@ public class UserChat implements IUserChat {
     static Registry registry;
     static ArrayList<Object> rooms;
     
+
     public static void main(String[] args) {
-        JOptionPane.showInputDialog("Qual o IP do servidor?");
+        UserFrame userFrame = new UserFrame();
+        userFrame.setVisible(true);
+        String IPServer = JOptionPane.showInputDialog("Qual o IP do servidor?");
         try {
-            registry = LocateRegistry.getRegistry("Servidor", 2020);
-            obj = (IRemoto) registry.lookup("getRooms");
+            registry = LocateRegistry.getRegistry(IPServer, 2020);
+            obj = (IRemoto) registry.lookup("Servidor");
             rooms = obj.getRooms();
         } catch (Exception e) {
             System.out.println("erro:" + e);
             e.printStackTrace();
         }
+        
+        
     }
-
-
 
     @Override
-        public void deliverMsg(String senderName, String msg) {
-       
+    public void deliverMsg(String senderName, String msg) {
+
     }
-    
+
 }

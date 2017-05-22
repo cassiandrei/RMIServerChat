@@ -8,6 +8,7 @@ package userroomchat;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import remoto.IRemoto;
 
 /**
@@ -22,6 +23,7 @@ public class UserChat implements IUserChat {
     static ArrayList<Object> rooms;
     
     public static void main(String[] args) {
+        JOptionPane.showInputDialog("Qual o IP do servidor?");
         try {
             registry = LocateRegistry.getRegistry("Servidor", 2020);
             obj = (IRemoto) registry.lookup("getRooms");

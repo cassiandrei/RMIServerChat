@@ -5,6 +5,7 @@
  */
 package serverroomchat;
 
+import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -14,20 +15,26 @@ import javax.swing.JOptionPane;
  * @author cassiano-ncc
  */
 public class ServerRoomChat implements IServerRoomChat{
-
+    
+    Registry registry;     
+    String host = "localhost";
     ArrayList<RoomChat> salas;
+    
+    public ServerRoomChat(){
+        try{
+            registry = LocateRegistry.createRegistry(2020);           
+            registry.rebind("Servidor", this);
+        }catch(Exception e){
+            System.out.println("erro:" + e);
+            e.printStackTrace();
+        }
+    }
+    
+    
     public static void main(String[] args) {
+        ServerRoomChat server = new ServerRoomChat();
         ServerFrame janela = new ServerFrame();
         janela.setVisible(true);
-        /* Qaundo cria nova sala
-        //String roomName = JOptionPane.showInputDialog("Qual o nome da nova sala?");
-        try{
-            Registry r = java.rmi.registry.LocateRegistry.createRegistry(2020);
-            r.rebind("Servidor",new RoomChat(roomName));
-       }
-        catch(Exception e){
-            System.out.println("erro" + e);
-        }*/
     }
 
     @Override

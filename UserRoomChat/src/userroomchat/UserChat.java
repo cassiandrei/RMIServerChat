@@ -21,8 +21,13 @@ public class UserChat implements IUserChat {
     static IRemoto obj;
     static Registry registry;
     public static ArrayList<Object> rooms;
-    static ArrayList<String> roomNames;
+    public static ArrayList<String> roomNames;
+    static String usrChat;
+    static UserFrame userFrame;
     
+    UserChat(String nome) {
+        usrName = nome;
+    }
 
     public static void main(String[] args) {
         String IPServer = JOptionPane.showInputDialog("Qual o IP do servidor?");
@@ -35,13 +40,17 @@ public class UserChat implements IUserChat {
             System.out.println("erro:" + e);
             e.printStackTrace();
         }
-        UserFrame userFrame = new UserFrame(rooms,usrName,roomNames, obj);
+        userFrame = new UserFrame(rooms,usrName,roomNames, usrChat, obj);
         userFrame.setVisible(true);
     }
 
     @Override
     public void deliverMsg(String senderName, String msg) {
-
+       userFrame.setVisible(false);
+       usrChat = usrChat + senderName + ": " + msg + "\n";
+       userFrame = new UserFrame(rooms,usrName,roomNames, usrChat, obj);
+       userFrame.atualiza();
+       userFrame.setVisible(true);
     }
 
 }

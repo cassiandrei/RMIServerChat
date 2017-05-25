@@ -22,12 +22,14 @@ public class UserFrame extends javax.swing.JFrame {
     public String usrName;
     public IRemoto obj;
     public ArrayList<String> roomNames;
+    public String usrChat;
     
-    public UserFrame(ArrayList<Object> roomList,String usrName, ArrayList<String> roomNames, IRemoto obj) {
+    public UserFrame(ArrayList<Object> roomList,String usrName, ArrayList<String> roomNames, String usrChat, IRemoto obj) {
         this.roomList = roomList;
         this.usrName = usrName;
         this.obj = obj;
         this.roomNames = roomNames;
+        this.usrChat = usrChat;
         initComponents();
         for (String roomNames1 : roomNames) { // adiciono a lista de salas para o jComboBox
             listaSalas.addItem(roomNames1);
@@ -55,7 +57,7 @@ public class UserFrame extends javax.swing.JFrame {
         chat = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
+        newMsg = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -69,6 +71,11 @@ public class UserFrame extends javax.swing.JFrame {
         });
 
         jButton2.setText("Create Room");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                userCreateRoom(evt);
+            }
+        });
 
         chat.setEditable(false);
         chat.setColumns(20);
@@ -77,9 +84,9 @@ public class UserFrame extends javax.swing.JFrame {
 
         jLabel2.setText("Chat");
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane2.setViewportView(jTextArea2);
+        newMsg.setColumns(20);
+        newMsg.setRows(5);
+        jScrollPane2.setViewportView(newMsg);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -146,6 +153,10 @@ public class UserFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_userJoin
 
+    private void userCreateRoom(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userCreateRoom
+        
+    }//GEN-LAST:event_userCreateRoom
+
     /**
      * @param args the command line arguments
      */
@@ -180,6 +191,15 @@ public class UserFrame extends javax.swing.JFrame {
             }
         });
     }
+    
+    public void atualiza(){
+        chat.removeAll();
+        chat.insert(usrChat,0);
+        listaSalas.removeAllItems();
+        for(int i=0;i<roomNames.size();i++){
+            listaSalas.addItem(roomNames.get(i));
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea chat;
@@ -188,8 +208,8 @@ public class UserFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea2;
     private javax.swing.JComboBox<String> listaSalas;
+    private javax.swing.JTextArea newMsg;
     private javax.swing.JButton userJoinButton;
     // End of variables declaration//GEN-END:variables
 }

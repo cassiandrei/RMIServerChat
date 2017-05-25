@@ -6,10 +6,14 @@
 package userroomchat;
 
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import remoto.IRemoto;
+
 
 /**
  *
@@ -23,13 +27,16 @@ public class UserFrame extends javax.swing.JFrame {
     public IRemoto obj;
     public ArrayList<String> roomNames;
     public String usrChat;
+    static Registry registry;
+    public String IPServer;
     
-    public UserFrame(ArrayList<Object> roomList,String usrName, ArrayList<String> roomNames, String usrChat, IRemoto obj) {
+    public UserFrame(ArrayList<Object> roomList,String usrName, ArrayList<String> roomNames, String usrChat, IRemoto obj, String IPServer) {
         this.roomList = roomList;
         this.usrName = usrName;
         this.obj = obj;
         this.roomNames = roomNames;
         this.usrChat = usrChat;
+        this.IPServer = IPServer;
         initComponents();
         for (String roomNames1 : roomNames) { // adiciono a lista de salas para o jComboBox
             listaSalas.addItem(roomNames1);
@@ -58,6 +65,7 @@ public class UserFrame extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         newMsg = new javax.swing.JTextArea();
+        usrSend = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -88,6 +96,13 @@ public class UserFrame extends javax.swing.JFrame {
         newMsg.setRows(5);
         jScrollPane2.setViewportView(newMsg);
 
+        usrSend.setText("Send");
+        usrSend.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                userSend(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -114,7 +129,11 @@ public class UserFrame extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jScrollPane1)
                         .addContainerGap())
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(usrSend)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -132,8 +151,13 @@ public class UserFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(usrSend)
+                        .addGap(28, 28, 28))))
         );
 
         pack();
@@ -144,7 +168,7 @@ public class UserFrame extends javax.swing.JFrame {
             if(roomNames.get(i).equals(listaSalas.getSelectedItem())){
                 this.obj =(IRemoto)roomList.get(i);
                 try {
-                    obj.joinRoom(usrName, "host");
+                    obj.joinRoom(usrName, "host");//falta criar hosts para os usuários
                 } catch (RemoteException ex) {
                     Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -154,8 +178,27 @@ public class UserFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_userJoin
 
     private void userCreateRoom(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userCreateRoom
-        
+        String roomName = JOptionPane.showInputDialog("Qual o nome da nova sala?");
+        try {
+            registry = LocateRegistry.getRegistry(IPServer, 2020);
+            obj = (IRemoto) registry.lookup("Servidor");
+            obj.createRoom(roomName);
+        } catch (Exception e) {
+            System.out.println("erro:" + e);
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_userCreateRoom
+
+    private void userSend(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userSend
+            try {
+                registry = LocateRegistry.getRegistry(IPServer,2020); // host do user ao invés de IPServer
+                obj = (IRemoto) registry.lookup("sendMsg");
+                obj.sendMsg(usrName, newMsg.getText());
+            }catch(Exception e){
+                    System.out.println("erro:" + e);
+                    e.printStackTrace();
+            }
+    }//GEN-LAST:event_userSend
 
     /**
      * @param args the command line arguments
@@ -200,6 +243,20 @@ public class UserFrame extends javax.swing.JFrame {
             listaSalas.addItem(roomNames.get(i));
         }
     }
+    
+    public void atualizaChat(String usrChat){
+        this.usrChat = usrChat;
+        chat.removeAll();
+        chat.insert(usrChat,0);
+    }
+    
+    public void atualizaListaSalas(ArrayList<String> roomNames){
+        this.roomNames = roomNames;
+        listaSalas.removeAllItems();
+        for(int i=0;i<roomNames.size();i++){
+            listaSalas.addItem(roomNames.get(i));
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea chat;
@@ -211,5 +268,6 @@ public class UserFrame extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> listaSalas;
     private javax.swing.JTextArea newMsg;
     private javax.swing.JButton userJoinButton;
+    private javax.swing.JButton usrSend;
     // End of variables declaration//GEN-END:variables
 }

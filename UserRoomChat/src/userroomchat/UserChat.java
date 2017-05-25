@@ -21,6 +21,7 @@ public class UserChat implements IUserChat {
     static IRemoto obj;
     static Registry registry;
     public static ArrayList<Object> rooms;
+    static ArrayList<String> roomNames;
     
 
     public static void main(String[] args) {
@@ -29,11 +30,12 @@ public class UserChat implements IUserChat {
             registry = LocateRegistry.getRegistry(IPServer, 2020);
             obj = (IRemoto) registry.lookup("Servidor");
             rooms = obj.getRooms();
+            roomNames = obj.getRoomNames();
         } catch (Exception e) {
             System.out.println("erro:" + e);
             e.printStackTrace();
         }
-        UserFrame userFrame = new UserFrame(rooms,usrName, obj);
+        UserFrame userFrame = new UserFrame(rooms,usrName,roomNames, obj);
         userFrame.setVisible(true);
     }
 

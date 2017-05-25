@@ -59,4 +59,12 @@ public class ServerRoomChat implements IServerRoomChat{
         }
     }
     
+    public ArrayList<String> getRoomNames() {
+        ArrayList<String> nomes = new ArrayList<String>();
+        for(int i=0;i<salas.size();i++){
+            nomes.add(i,salas.get(i).roomName);
+        }
+        return nomes;
+    }
+    
 }

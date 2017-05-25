@@ -21,14 +21,16 @@ public class UserFrame extends javax.swing.JFrame {
     public ArrayList<Object> roomList;
     public String usrName;
     public IRemoto obj;
+    public ArrayList<String> roomNames;
     
-    public UserFrame(ArrayList<Object> roomList,String usrName, IRemoto obj) {
+    public UserFrame(ArrayList<Object> roomList,String usrName, ArrayList<String> roomNames, IRemoto obj) {
         this.roomList = roomList;
         this.usrName = usrName;
         this.obj = obj;
+        this.roomNames = roomNames;
         initComponents();
-        for (Object roomList1 : roomList) { // adiciono a lista de salas para o jComboBox
-            listaSalas.addItem(roomList1);
+        for (String roomNames1 : roomNames) { // adiciono a lista de salas para o jComboBox
+            listaSalas.addItem(roomNames1);
         }
     }
     
@@ -131,11 +133,16 @@ public class UserFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void userJoin(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userJoin
-        this.obj = (IRemoto)roomList.get(0); //falta encontrar a posição da roomList
-        try {
-            obj.joinRoom(usrName, "host");
-        } catch (RemoteException ex) {
-            Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
+        for(int i=0;i<roomNames.size();i++){
+            if(roomNames.get(i).equals(listaSalas.getSelectedItem())){
+                this.obj =(IRemoto)roomList.get(i);
+                try {
+                    obj.joinRoom(usrName, "host");
+                } catch (RemoteException ex) {
+                    Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                i = roomNames.size();
+            }          
         }
     }//GEN-LAST:event_userJoin
 
@@ -182,7 +189,7 @@ public class UserFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JComboBox<Object> listaSalas;
+    private javax.swing.JComboBox<String> listaSalas;
     private javax.swing.JButton userJoinButton;
     // End of variables declaration//GEN-END:variables
 }

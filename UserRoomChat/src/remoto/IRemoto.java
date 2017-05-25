@@ -19,4 +19,5 @@ public interface IRemoto {
     public void closeRoom() throws RemoteException;
     public ArrayList<Object> getRooms() throws RemoteException;
     public void createRoom(String roomName) throws RemoteException;
+    public ArrayList<String> getRoomNames() throws RemoteException;;
 }

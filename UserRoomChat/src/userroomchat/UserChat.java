@@ -10,7 +10,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
-import remoto.*
+import remoto.*;
 
         
 /**
@@ -20,16 +20,16 @@ import remoto.*
 public class UserChat implements IUserChat {
 
     static String usrName;
-    static IRemoto obj;
+    static IServerRoomChat obj;
     static Registry registry;
-    public static ArrayList<Object> rooms;
+    public static ArrayList<String> rooms;
     
 
     public static void main(String[] args) {
         String IPServer = JOptionPane.showInputDialog("Qual o IP do servidor?");
         try {
             registry = LocateRegistry.getRegistry(IPServer, 2020);
-            obj = (IRemoto) registry.lookup("Servidor");
+            obj = (IServerRoomChat) registry.lookup("Servidor");
             rooms = obj.getRooms();
         } catch (Exception e) {
             System.out.println("erro:" + e);

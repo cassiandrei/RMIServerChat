@@ -25,7 +25,7 @@ import serverroomchat.Users;
 public class RoomChat implements IRoomChat{
     ArrayList<Users> users;
     String roomName;
-    static IRemoto obj;
+    static IUserChat obj;
     
     RoomChat(String nome){
         roomName = nome;
@@ -38,7 +38,7 @@ public class RoomChat implements IRoomChat{
             String destino = users.get(i).host;
             try {
                 registry = LocateRegistry.getRegistry(destino,2020);
-                obj = (IRemoto) registry.lookup("deliveryMsg");
+                obj = (IUserChat) registry.lookup("deliveryMsg");
                 obj.deliverMsg(usrName, msg);
             }catch(Exception e){
                     System.out.println("erro:" + e);

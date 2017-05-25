@@ -9,7 +9,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import remoto.IRemoto;
+import remoto.IServerRoomChat;
 
 /**
  *
@@ -18,11 +18,11 @@ import remoto.IRemoto;
 public class UserFrame extends javax.swing.JFrame {
 
     
-    public ArrayList<Object> roomList;
+    public ArrayList<String> roomList;
     public String usrName;
-    public IRemoto obj;
+    public IServerRoomChat obj;
     
-    public UserFrame(ArrayList<Object> roomList,String usrName, IRemoto obj) {
+    public UserFrame(ArrayList<String> roomList,String usrName, IServerRoomChat obj) {
         this.roomList = roomList;
         this.usrName = usrName;
         this.obj = obj;
@@ -131,12 +131,12 @@ public class UserFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void userJoin(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userJoin
-        this.obj = (IRemoto)roomList.get(0); //falta encontrar a posição da roomList
-        try {
-            obj.joinRoom(usrName, "host");
-        } catch (RemoteException ex) {
-            Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        //this.obj = (String)roomList.get(0); //falta encontrar a posição da roomList
+        //try {
+          //  obj.joinRoom(usrName, "host");
+        //} catch (RemoteException ex) {
+          //  Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
+        //}
     }//GEN-LAST:event_userJoin
 
     /**
@@ -168,6 +168,7 @@ public class UserFrame extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new UserFrame().setVisible(true);
             }

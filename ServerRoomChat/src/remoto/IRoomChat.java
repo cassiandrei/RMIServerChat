@@ -5,18 +5,13 @@
  */
 package remoto;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-/**
- *
- * @author cassiano
- */
-public interface IRemoto {
+
+public interface IRoomChat extends Remote{
     public void sendMsg(String usrName, String msg) throws RemoteException;
     public void joinRoom(String usrName, String host) throws RemoteException;
     public void leaveRoom(String usrName) throws RemoteException;
-    public void closeRoom() throws RemoteException;
-    public ArrayList<Object> getRooms() throws RemoteException;
-    public void createRoom(String roomName) throws RemoteException;
 }

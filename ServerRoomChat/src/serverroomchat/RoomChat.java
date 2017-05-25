@@ -5,7 +5,7 @@
  */
 package serverroomchat;
 
-import remoto.IRemoto;
+import remoto.*;
 
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
@@ -15,6 +15,8 @@ import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import remoto.IRoomChat;
+import serverroomchat.Users;
 
 /**
  *

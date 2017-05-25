@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package serverroomchat;
+package remoto;
 
+import serverroomchat.RoomChat;
 import java.rmi.RemoteException;
 import java.rmi.Remote;
 

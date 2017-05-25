@@ -5,12 +5,14 @@
  */
 package userroomchat;
 
+import remoto.IUserChat;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
-import remoto.IRemoto;
+import remoto.*
 
+        
 /**
  *
  * @author cassiano

@@ -19,7 +19,7 @@ public class ServerRoomChat implements IServerRoomChat{
     
     Registry registry;     
     String host = "localhost";
-    ArrayList<RoomChat> salas;
+    ArrayList<String> salas;
     
     public ServerRoomChat(){
         try{
@@ -39,7 +39,7 @@ public class ServerRoomChat implements IServerRoomChat{
     }
 
     @Override
-    public ArrayList<RoomChat> getRooms() {
+    public ArrayList<String> getRooms() {
         return salas;
     }
 
@@ -58,6 +58,14 @@ public class ServerRoomChat implements IServerRoomChat{
                 salas.remove(get);
             }
         }
+    }
+    
+    public ArrayList<String> getRoomNames() {
+        ArrayList<String> nomes = new ArrayList<String>();
+        for(int i=0;i<salas.size();i++){
+            nomes.add(i,salas.get(i).roomName);
+        }
+        return nomes;
     }
     
 }

@@ -5,9 +5,11 @@
  */
 package userroomchat;
 
+import java.rmi.RemoteException;
 import remoto.IUserChat;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import remoto.*;
@@ -17,7 +19,7 @@ import remoto.*;
  *
  * @author cassiano
  */
-public class UserChat implements IUserChat {
+public class UserChat extends UnicastRemoteObject implements IUserChat {
 
     static String usrName;
     static IServerRoomChat obj;
@@ -27,22 +29,25 @@ public class UserChat implements IUserChat {
     static UserFrame userFrame;
     public static String IPServer;
     
-    UserChat(String nome) {
-        usrName = nome;
-    }
 
     public static void main(String[] args) {
         IPServer = JOptionPane.showInputDialog("Qual o IP do servidor?");
+        
         try {
-            registry = LocateRegistry.getRegistry(IPServer, 2020);
+            registry = LocateRegistry.getRegistry(2020);
             obj = (IServerRoomChat) registry.lookup("Servidor");
             roomList = obj.getRooms();
         } catch (Exception e) {
             System.out.println("erro:" + e);
             e.printStackTrace();
         }
-        userFrame = new UserFrame(roomList,usrName, usrChat, obj, IPServer);
+        userFrame = new UserFrame(roomList, obj, IPServer);
         userFrame.setVisible(true);
+    }
+
+    UserChat() throws RemoteException{
+        usrName = JOptionPane.showInputDialog("Qual o nome do usuário?");
+
     }
 
     @Override

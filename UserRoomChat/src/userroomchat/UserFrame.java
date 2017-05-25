@@ -5,6 +5,9 @@
  */
 package userroomchat;
 
+import java.rmi.AccessException;
+import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -14,8 +17,7 @@ import java.util.logging.Logger;
 import remoto.IServerRoomChat;
 import javax.swing.JOptionPane;
 import remoto.IRoomChat;
-
-
+import static userroomchat.UserChat.obj;
 
 /**
  *
@@ -23,29 +25,28 @@ import remoto.IRoomChat;
  */
 public class UserFrame extends javax.swing.JFrame {
 
-    
     public ArrayList<String> roomList;
     public String usrName;
     public IServerRoomChat obj;
-    public IRoomChat objroom;
-    public ArrayList<String> roomNames;
-    public String usrChat;
+    public ArrayList<IRoomChat> objRooms;
+    public UserChat usr;
     static Registry registry;
     public String IPServer;
-    
-    public UserFrame(ArrayList<String> roomList,String usrName, String usrChat, IServerRoomChat obj, String IPServer) {
+    public String usrChat;
+
+    public UserFrame(ArrayList<String> roomList, IServerRoomChat obj, String IPServer) {
         this.roomList = roomList;
         this.usrName = usrName;
         this.obj = obj;
-        this.roomNames = roomNames;
-        this.usrChat = usrChat;
         this.IPServer = IPServer;
         initComponents();
-        for (String roomNames1 : roomNames) { // adiciono a lista de salas para o jComboBox
-            listaSalas.addItem(roomNames1);
+        if (roomList != null) {
+            for (String roomNames1 : roomList) { // adiciono a lista de salas para o jComboBox
+                listaSalas.addItem(roomNames1);
+            }
         }
     }
-    
+
     public UserFrame() {
         initComponents();
     }
@@ -167,30 +168,44 @@ public class UserFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void userJoin(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userJoin
-
+        if (roomList.size() > 0) {
+            Registry registry = null;
+            try {
+                registry = LocateRegistry.getRegistry(2020);
+                IRoomChat room = (IRoomChat) registry.lookup("Servidor");
+                room.joinRoom(usrName);
+                objRooms.add(room);
+                atualiza();
+            } catch (RemoteException | NotBoundException ex) {
+                Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }//GEN-LAST:event_userJoin
 
     private void userCreateRoom(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userCreateRoom
         String roomName = JOptionPane.showInputDialog("Qual o nome da nova sala?");
+        Registry registry = null;
         try {
-            registry = LocateRegistry.getRegistry(IPServer, 2020);
-            obj = (IServerRoomChat) registry.lookup("Servidor");
+            registry = LocateRegistry.getRegistry(2020);
+            usr = new UserChat();
+            registry.bind(usr.usrName, this.usr);
             obj.createRoom(roomName);
-        } catch (Exception e) {
-            System.out.println("erro:" + e);
-            e.printStackTrace();
+            atualiza();
+        } catch (RemoteException | AlreadyBoundException ex) {
+            Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }//GEN-LAST:event_userCreateRoom
 
     private void userSend(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userSend
-            try {
-                registry = LocateRegistry.getRegistry(IPServer,2020); // host do user ao invés de IPServer
-                objroom = (IRoomChat) registry.lookup("sendMsg");
-                objroom.sendMsg(usrName, newMsg.getText());
-            }catch(Exception e){
-                    System.out.println("erro:" + e);
-                    e.printStackTrace();
-            }
+        /* try {
+            registry = LocateRegistry.getRegistry(IPServer, 2020); // host do user ao invés de IPServer
+            objroom = (IRoomChat) registry.lookup("sendMsg");
+            objroom.sendMsg(usrName, newMsg.getText());
+        } catch (Exception e) {
+            System.out.println("erro:" + e);
+            e.printStackTrace();
+        }*/
     }//GEN-LAST:event_userSend
 
     /**
@@ -219,35 +234,39 @@ public class UserFrame extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(UserFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 new UserFrame().setVisible(true);
+
             }
         });
     }
-    
-    public void atualiza(){
+
+    public void atualiza() {
         chat.removeAll();
-        chat.insert(usrChat,0);
+        chat.insert(usr.usrChat, 0);
         listaSalas.removeAllItems();
-        for(int i=0;i<roomNames.size();i++){
-            listaSalas.addItem(roomNames.get(i));
+        for (int i = 0; i < roomList.size(); i++) {
+            listaSalas.addItem(roomList.get(i));
         }
     }
-    
-    public void atualizaChat(String usrChat){
+
+    public void atualizaChat(String usrChat) {
         this.usrChat = usrChat;
         chat.removeAll();
-        chat.insert(usrChat,0);
+        chat.insert(usrChat, 0);
     }
-    
-    public void atualizaListaSalas(ArrayList<String> roomNames){
-        this.roomNames = roomNames;
+
+    public void atualizaListaSalas(ArrayList<String> roomNames) {
+        this.roomList = roomNames;
         listaSalas.removeAllItems();
-        for(int i=0;i<roomNames.size();i++){
+        for (int i = 0; i < roomNames.size(); i++) {
             listaSalas.addItem(roomNames.get(i));
         }
     }

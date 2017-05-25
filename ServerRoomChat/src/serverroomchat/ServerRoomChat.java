@@ -5,9 +5,11 @@
  */
 package serverroomchat;
 
+import java.rmi.RemoteException;
 import remoto.IServerRoomChat;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
@@ -15,16 +17,19 @@ import javax.swing.JOptionPane;
  *
  * @author cassiano-ncc
  */
-public class ServerRoomChat implements IServerRoomChat{
+public class ServerRoomChat extends UnicastRemoteObject implements IServerRoomChat{
     
     Registry registry;     
     String host = "localhost";
-    ArrayList<String> salas;
+    static ArrayList<String> salas = new ArrayList<String>();
+    static ServerFrame srvFrame;
     
-    public ServerRoomChat(){
+    public ServerRoomChat() throws RemoteException{
+        super();
         try{
             registry = LocateRegistry.createRegistry(2020);           
             registry.rebind("Servidor", this);
+            System.out.println("Servidor criado!");
         }catch(Exception e){
             System.out.println("erro:" + e);
             e.printStackTrace();
@@ -32,10 +37,10 @@ public class ServerRoomChat implements IServerRoomChat{
     }
     
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RemoteException {
         ServerRoomChat server = new ServerRoomChat();
-        ServerFrame janela = new ServerFrame();
-        janela.setVisible(true);
+        srvFrame = new ServerFrame(salas);
+        srvFrame.setVisible(true);
     }
 
     @Override
@@ -45,27 +50,10 @@ public class ServerRoomChat implements IServerRoomChat{
 
     @Override
     public void createRoom(String roomName) {
-        RoomChat nova = new RoomChat(roomName);
-        salas.add(nova);
+        salas.add(roomName);
+        System.out.println("Sala Criada:" + roomName);
+        srvFrame.atualiza();
     }
-    
-    
-    @Override
-    public void closeRoom(String nome) {
-        for (int i = 0; i < salas.size(); i++) {
-            RoomChat get =  salas.get(i);
-            if(get.roomName.equals(nome)){
-                salas.remove(get);
-            }
-        }
-    }
-    
-    public ArrayList<String> getRoomNames() {
-        ArrayList<String> nomes = new ArrayList<String>();
-        for(int i=0;i<salas.size();i++){
-            nomes.add(i,salas.get(i).roomName);
-        }
-        return nomes;
-    }
+   
     
 }

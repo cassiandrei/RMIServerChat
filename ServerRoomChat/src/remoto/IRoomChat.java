@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public interface IRoomChat extends Remote{
     public void sendMsg(String usrName, String msg) throws RemoteException;
-    public void joinRoom(String usrName, String host) throws RemoteException;
+    public void joinRoom(String usrName) throws RemoteException;
     public void leaveRoom(String usrName) throws RemoteException;
+    public void closeRoom(String nome) throws RemoteException;
 }

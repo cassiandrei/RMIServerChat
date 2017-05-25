@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import remoto.IServerRoomChat;
 import javax.swing.JOptionPane;
 import remoto.IRoomChat;
+import static userroomchat.UserChat.IPServer;
 import static userroomchat.UserChat.obj;
 
 /**
@@ -26,17 +27,17 @@ import static userroomchat.UserChat.obj;
 public class UserFrame extends javax.swing.JFrame {
 
     public ArrayList<String> roomList;
-    public String usrName;
     public IServerRoomChat obj;
-    public ArrayList<IRoomChat> objRooms;
+    public ArrayList<IRoomChat> objRooms = new ArrayList<IRoomChat>();
     public UserChat usr;
     static Registry registry;
     public String IPServer;
     public String usrChat;
+    IRoomChat room=null;
 
-    public UserFrame(ArrayList<String> roomList, IServerRoomChat obj, String IPServer) {
+    public UserFrame(ArrayList<String> roomList, IServerRoomChat obj, String IPServer) throws RemoteException, AlreadyBoundException {
+        this.usr = new UserChat();
         this.roomList = roomList;
-        this.usrName = usrName;
         this.obj = obj;
         this.IPServer = IPServer;
         initComponents();
@@ -172,10 +173,11 @@ public class UserFrame extends javax.swing.JFrame {
             Registry registry = null;
             try {
                 registry = LocateRegistry.getRegistry(2020);
-                IRoomChat room = (IRoomChat) registry.lookup("Servidor");
-                room.joinRoom(usrName);
+                this.room = (IRoomChat) registry.lookup((String)listaSalas.getSelectedItem());
+                System.out.println("USER: "+ usr.usrName);
+                room.joinRoom((String)usr.usrName);
                 objRooms.add(room);
-                atualiza();
+                atualiza(usrChat);
             } catch (RemoteException | NotBoundException ex) {
                 Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -187,25 +189,26 @@ public class UserFrame extends javax.swing.JFrame {
         Registry registry = null;
         try {
             registry = LocateRegistry.getRegistry(2020);
-            usr = new UserChat();
-            registry.bind(usr.usrName, this.usr);
+            //usr = new UserChat();
+            //registry.bind(usr.usrName, this.usr);
             obj.createRoom(roomName);
-            atualiza();
-        } catch (RemoteException | AlreadyBoundException ex) {
+            roomList.add(roomName);
+            atualiza(usrChat);
+        } catch (RemoteException ex) {
             Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }//GEN-LAST:event_userCreateRoom
 
     private void userSend(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userSend
-        /* try {
-            registry = LocateRegistry.getRegistry(IPServer, 2020); // host do user ao invés de IPServer
-            objroom = (IRoomChat) registry.lookup("sendMsg");
-            objroom.sendMsg(usrName, newMsg.getText());
-        } catch (Exception e) {
+         try {
+            registry = LocateRegistry.getRegistry(2020); // host do user ao invés de IPServer
+            this.room = (IRoomChat) registry.lookup((String)listaSalas.getSelectedItem());
+            this.room.sendMsg(usr.usrName, newMsg.getText());
+            newMsg.removeAll();
+        } catch (NotBoundException | RemoteException e) {
             System.out.println("erro:" + e);
-            e.printStackTrace();
-        }*/
+        }
     }//GEN-LAST:event_userSend
 
     /**
@@ -248,28 +251,16 @@ public class UserFrame extends javax.swing.JFrame {
         });
     }
 
-    public void atualiza() {
+    public void atualiza(String usrChat) {
         chat.removeAll();
-        chat.insert(usr.usrChat, 0);
+        chat.insert(usrChat,0);
         listaSalas.removeAllItems();
         for (int i = 0; i < roomList.size(); i++) {
             listaSalas.addItem(roomList.get(i));
         }
     }
 
-    public void atualizaChat(String usrChat) {
-        this.usrChat = usrChat;
-        chat.removeAll();
-        chat.insert(usrChat, 0);
-    }
-
-    public void atualizaListaSalas(ArrayList<String> roomNames) {
-        this.roomList = roomNames;
-        listaSalas.removeAllItems();
-        for (int i = 0; i < roomNames.size(); i++) {
-            listaSalas.addItem(roomNames.get(i));
-        }
-    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea chat;

@@ -5,6 +5,7 @@
  */
 package userroomchat;
 
+import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import remoto.IUserChat;
 import java.rmi.registry.LocateRegistry;
@@ -30,11 +31,10 @@ public class UserChat extends UnicastRemoteObject implements IUserChat {
     public static String IPServer;
     
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RemoteException, AlreadyBoundException {
         IPServer = JOptionPane.showInputDialog("Qual o IP do servidor?");
-        
         try {
-            registry = LocateRegistry.getRegistry(2020);
+            registry = LocateRegistry.getRegistry(IPServer,2020);
             obj = (IServerRoomChat) registry.lookup("Servidor");
             roomList = obj.getRooms();
         } catch (Exception e) {
@@ -45,17 +45,16 @@ public class UserChat extends UnicastRemoteObject implements IUserChat {
         userFrame.setVisible(true);
     }
 
-    UserChat() throws RemoteException{
+    UserChat() throws RemoteException, AlreadyBoundException{
         usrName = JOptionPane.showInputDialog("Qual o nome do usuário?");
-
+        registry.bind(usrName, this);
     }
 
     @Override
     public void deliverMsg(String senderName, String msg) {
-       usrChat = usrChat + senderName + ": " + msg + "\n";
-       userFrame.atualizaChat(usrChat);
-       userFrame.atualiza();
-
+       usrChat = senderName + ": " + msg + "\n";
+       userFrame.atualiza(usrChat);
+        System.out.println("Usuario recebeu");
     }
 
 }

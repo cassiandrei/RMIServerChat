@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
 import remoto.IRoomChat;
 import remoto.IUserChat;
 import static userroomchat.UserChat.IPServer;
-import static userroomchat.UserChat.obj;
+import static userroomchat.UserChat.iServer;
 
 /**
  *

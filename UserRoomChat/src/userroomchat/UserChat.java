@@ -24,7 +24,7 @@ import remoto.*;
 public class UserChat extends UnicastRemoteObject implements IUserChat {
 
     static String usrName;
-    static IServerRoomChat obj;
+    static IServerRoomChat iServer;
     static Registry registry;
     public static TreeMap<String, IRoomChat> roomList;
     //static String usrChat;
@@ -36,13 +36,13 @@ public class UserChat extends UnicastRemoteObject implements IUserChat {
         IPServer = JOptionPane.showInputDialog("Qual o IP do servidor?");
         try {
             registry = LocateRegistry.getRegistry(IPServer,2020);
-            obj = (IServerRoomChat) registry.lookup("Servidor");
-            roomList = obj.getRooms();
+            iServer = (IServerRoomChat) registry.lookup("Servidor");
+            roomList = iServer.getRooms();
         } catch (Exception e) {
             System.out.println("erro:" + e);
             e.printStackTrace();
         }
-        userFrame = new UserFrame(roomList, obj, IPServer);
+        userFrame = new UserFrame(roomList, iServer, IPServer);
         userFrame.setVisible(true);
     }
 

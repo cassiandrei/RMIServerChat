@@ -5,7 +5,13 @@
  */
 package serverroomchat;
 
+import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import remoto.IRoomChat;
 
 /**
  *
@@ -16,13 +22,13 @@ public class ServerFrame extends javax.swing.JFrame {
     /**
      * Creates new form ServerFrame
      */
-    ArrayList<String> salas;
+    TreeMap<String,IRoomChat> salas;
     
     public ServerFrame() {
         initComponents();
     }
     
-    public ServerFrame(ArrayList<String> salas) {
+    public ServerFrame(TreeMap<String,IRoomChat> salas) {
         this.salas = salas;
         initComponents();
     }
@@ -112,9 +118,13 @@ public class ServerFrame extends javax.swing.JFrame {
     }
 
     public void atualiza(){
-        listaSalas.removeAllItems();
-        for(int i=0;i<salas.size();i++){
-            listaSalas.addItem(salas.get(i));
+        Set set = salas.entrySet();
+        // Get an iterator
+        Iterator i = set.iterator();
+        // Display elements
+        while(i.hasNext()) {
+            Map.Entry sala = (Map.Entry)i.next();
+            listaSalas.add((Component) sala.getKey());
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables

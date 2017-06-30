@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import remoto.IRoomChat;
 
 /**
  *
@@ -25,8 +26,9 @@ public class ServerRoomChat extends UnicastRemoteObject implements IServerRoomCh
     
     Registry registry;     
     String host = "localhost";
-    static TreeMap salas = new TreeMap();
+    static TreeMap<String, IRoomChat> roomList = new TreeMap<String, IRoomChat>();
     static ServerFrame srvFrame;
+    public int ID = 0;
     
     public ServerRoomChat() throws RemoteException{
         super();
@@ -43,27 +45,27 @@ public class ServerRoomChat extends UnicastRemoteObject implements IServerRoomCh
     
     public static void main(String[] args) throws RemoteException {
         ServerRoomChat server = new ServerRoomChat();
-        srvFrame = new ServerFrame(salas);
+        srvFrame = new ServerFrame(roomList);
         srvFrame.setVisible(true);
     }
 
     @Override
     public TreeMap getRooms() {
-        return salas;
+        return roomList;
     }
 
     @Override
     public void createRoom(String roomName) throws RemoteException, AccessException {
-        RoomChat room = null;
+        IRoomChat room = null;
         
         try{
-            room = new RoomChat(roomName);
+            room = new RoomChat(roomName, this.ID++);
             this.registry.bind(roomName, room);
             
         } catch (AlreadyBoundException ex) {
             Logger.getLogger(ServerRoomChat.class.getName()).log(Level.SEVERE, null, ex);
         }
-        salas.add(roomName);
+        roomList.put(roomName, room);
         System.out.println("Sala Criada:" + roomName);
         srvFrame.atualiza();
     }

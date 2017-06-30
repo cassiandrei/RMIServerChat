@@ -19,7 +19,6 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import remoto.IRoomChat;
-import static serverroomchat.ServerRoomChat.salas;
 
 /**
  *
@@ -32,33 +31,21 @@ public class RoomChat extends UnicastRemoteObject implements IRoomChat {
     static int ID;
     static IUserChat obj;
     //private HashMap<String, IUserChat> users = new HashMap<>();
-    private TreeMap userList = new TreeMap();
+    private TreeMap<String, IUserChat> userList = new TreeMap<String, IUserChat>();
 
-    RoomChat(String nome) throws RemoteException {
+    RoomChat(String nome, int ID) throws RemoteException {
         roomName = nome;
+        this.ID = ID;
     }
 
-    public void updateUserList(TreeMap<[String, IUserChat]>userList){
-   
-    }
-    
-    @Override
-    public void sendMsg(String usrName, String msg) {
-        this.users.entrySet().forEach((user) -> {
-            try {
-                user.getValue().deliverMsg(usrName,msg);
-               // obj = (IUserChat) registry.lookup(usrName);
-                //obj.deliverMsg(usrName, msg);
-            } catch (RemoteException e) {
-                System.out.println("erro:" + e);
-            }
-        });
-    }
+    //public void updateUserList(TreeMap<String, IUserChat>userList){
+    //    
+    //}
 
     @Override
     public int joinRoom(String usrName, IUserChat localObjRef) throws RemoteException, AccessException {
-       
-        updateUserList();
+        
+        userList.put(usrName, localObjRef);
         return ID;
         /*Registry registry = LocateRegistry.getRegistry(2020);
         try {
@@ -82,10 +69,6 @@ public class RoomChat extends UnicastRemoteObject implements IRoomChat {
 
     @Override
     public void closeRoom(String nome) {
-        for (int i = 0; i < salas.size(); i++) {
-            if (salas.get(i).equals(nome)) {
-                salas.remove(i);
-            }
-        }
+        
     }
 }

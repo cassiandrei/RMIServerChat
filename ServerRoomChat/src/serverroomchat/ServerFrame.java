@@ -124,7 +124,7 @@ public class ServerFrame extends javax.swing.JFrame {
         // Display elements
         while(i.hasNext()) {
             Map.Entry sala = (Map.Entry)i.next();
-            listaSalas.add((Component) sala.getKey());
+            listaSalas.addItem(sala.getKey().toString());
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables

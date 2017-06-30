@@ -59,7 +59,7 @@ public class ServerRoomChat extends UnicastRemoteObject implements IServerRoomCh
         IRoomChat room = null;
         
         try{
-            room = new RoomChat(roomName, this.ID++);
+            room = new RoomChat(roomName);
             this.registry.bind(roomName, room);
             
         } catch (AlreadyBoundException ex) {

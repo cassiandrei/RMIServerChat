@@ -27,6 +27,8 @@ public class UserChat extends UnicastRemoteObject implements IUserChat {
     static IServerRoomChat iServer;
     static Registry registry;
     public static TreeMap<String, IRoomChat> roomList;
+    public TreeMap<String, IUserChat> userList;
+    public int ID;
     //static String usrChat;
     static UserFrame userFrame;
     public static String IPServer;
@@ -59,6 +61,6 @@ public class UserChat extends UnicastRemoteObject implements IUserChat {
     
     @Override
     public void updateUserList(TreeMap<String, IUserChat> userList){
-        
+        this.userList = userList;
     }
 }

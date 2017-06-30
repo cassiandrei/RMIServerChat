@@ -12,6 +12,9 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,9 +33,8 @@ public class UserFrame extends javax.swing.JFrame {
 
     public TreeMap<String, IRoomChat> roomList;
     public IServerRoomChat iServer;
+  //  public ArrayList<IRoomChat> objRooms = new ArrayList<IRoomChat>();
     public IUserChat iUsr;
-    public IRoomChat iRoom;
-    public ArrayList<IRoomChat> objRooms = new ArrayList<IRoomChat>();
     public UserChat usr;
     static Registry registry;
     public String IPServer;
@@ -41,6 +43,7 @@ public class UserFrame extends javax.swing.JFrame {
 
     public UserFrame(TreeMap<String, IRoomChat> roomList, IServerRoomChat iServer, String IPServer) throws RemoteException, AlreadyBoundException {
         this.usr = new UserChat();
+        this.iUsr = usr;
         this.roomList = roomList;
         this.iServer = iServer;
         this.IPServer = IPServer;
@@ -179,8 +182,8 @@ public class UserFrame extends javax.swing.JFrame {
                 registry = LocateRegistry.getRegistry(2020);
                 this.room = (IRoomChat) registry.lookup((String)listaSalas.getSelectedItem());
                 System.out.println("USER: "+ usr.usrName);
-                room.joinRoom((String)usr.usrName,iUsr);
-                objRooms.add(room);
+                usr.ID = room.joinRoom((String)usr.usrName,iUsr);
+                //objRooms.add(room);
                 //deliverToGUI(usrChat);
             } catch (RemoteException | NotBoundException ex) {
                 Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -196,8 +199,9 @@ public class UserFrame extends javax.swing.JFrame {
             //usr = new UserChat();
             //registry.bind(usr.usrName, this.usr);
             iServer.createRoom(roomName);
-            roomList.put(roomName,iRoom);
-            //deliverToGUI(usrChat);
+            roomList.put(roomName,room);
+            atualiza();
+            
         } catch (RemoteException ex) {
             Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -205,14 +209,22 @@ public class UserFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_userCreateRoom
 
     private void userSend(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userSend
-         try {
-            registry = LocateRegistry.getRegistry(2020); // host do user ao invés de IPServer
-            this.room = (IRoomChat) registry.lookup((String)listaSalas.getSelectedItem());
-            //this.room.sendMsg(usr.usrName, newMsg.getText());
-            newMsg.removeAll();
-        } catch (NotBoundException | RemoteException e) {
-            System.out.println("erro:" + e);
+        //registry = LocateRegistry.getRegistry(2020); // host do user ao invés de IPServer
+        //this.room = (IRoomChat) registry.lookup((String)listaSalas.getSelectedItem());
+        //this.room.sendMsg(usr.usrName, newMsg.getText());
+        Integer [][] matriz = null;
+        Set<String> lista = usr.userList.keySet();
+        for(String nome:lista){
+            try {
+                usr.userList.get(nome).deliverMsg(usr.usrName, newMsg.getText(), matriz);
+            } catch (RemoteException ex) {
+                Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+        
+        
+        newMsg.removeAll();
+        
     }//GEN-LAST:event_userSend
 
     /**
@@ -258,11 +270,18 @@ public class UserFrame extends javax.swing.JFrame {
     public void deliverToGUI(String senderUsrName, String msg) {
         chat.removeAll();
         chat.insert(senderUsrName + ": " + msg + "\n",0);
+    }
+    
+    public void atualiza(){
         listaSalas.removeAllItems();
-        if (roomList != null) {
-            for (String roomNames1 : roomList.keySet()) { // adiciono a lista de salas para o jComboBox
-                listaSalas.addItem(roomNames1);
-            }
+ 
+        Set set = roomList.entrySet();
+        // Get an iterator
+        Iterator i = set.iterator();
+        // Display elements
+        while(i.hasNext()) {
+            Map.Entry sala = (Map.Entry)i.next();
+            listaSalas.addItem(sala.getKey().toString());
         }
     }
 

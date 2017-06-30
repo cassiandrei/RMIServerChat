@@ -29,6 +29,7 @@ public class RoomChat extends UnicastRemoteObject implements IRoomChat {
 
     // ArrayList<String> users = new ArrayList<String>();
     String roomName;
+    static int ID;
     static IUserChat obj;
     //private HashMap<String, IUserChat> users = new HashMap<>();
     private TreeMap userList = new TreeMap();
@@ -37,6 +38,10 @@ public class RoomChat extends UnicastRemoteObject implements IRoomChat {
         roomName = nome;
     }
 
+    public void updateUserList(TreeMap<[String, IUserChat]>userList){
+   
+    }
+    
     @Override
     public void sendMsg(String usrName, String msg) {
         this.users.entrySet().forEach((user) -> {
@@ -51,16 +56,18 @@ public class RoomChat extends UnicastRemoteObject implements IRoomChat {
     }
 
     @Override
-    public void joinRoom(String usrName) throws RemoteException, AccessException {
-        System.out.println("USUARIO:");
-        Registry registry = LocateRegistry.getRegistry(2020);
+    public int joinRoom(String usrName, IUserChat localObjRef) throws RemoteException, AccessException {
+       
+        updateUserList();
+        return ID;
+        /*Registry registry = LocateRegistry.getRegistry(2020);
         try {
             IUserChat user = (IUserChat) registry.lookup(usrName);
             users.put(usrName, user);
         } catch (NotBoundException ex) {
             Logger.getLogger(RoomChat.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("Entrou");
+        System.out.println("Entrou");*/
     }
 
     @Override

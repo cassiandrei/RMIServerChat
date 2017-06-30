@@ -7,13 +7,12 @@ package remoto;
 
 import java.rmi.RemoteException;
 import java.rmi.Remote;
-
-import java.util.ArrayList;
+import java.util.TreeMap;
 /**
  *
  * @author cassiano
  */
 public interface IServerRoomChat extends Remote{
-    public ArrayList<String> getRooms() throws RemoteException;
+    public TreeMap<String, IRoomChat> getRooms() throws RemoteException;
     public void createRoom(String roomName) throws RemoteException;
 }

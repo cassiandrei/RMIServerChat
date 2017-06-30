@@ -13,9 +13,9 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -25,7 +25,7 @@ public class ServerRoomChat extends UnicastRemoteObject implements IServerRoomCh
     
     Registry registry;     
     String host = "localhost";
-    static ArrayList<String> salas = new ArrayList<String>();
+    static TreeMap salas = new TreeMap();
     static ServerFrame srvFrame;
     
     public ServerRoomChat() throws RemoteException{
@@ -48,7 +48,7 @@ public class ServerRoomChat extends UnicastRemoteObject implements IServerRoomCh
     }
 
     @Override
-    public ArrayList<String> getRooms() {
+    public TreeMap getRooms() {
         return salas;
     }
 

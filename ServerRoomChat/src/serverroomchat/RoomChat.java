@@ -15,6 +15,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import remoto.IRoomChat;
@@ -29,7 +30,8 @@ public class RoomChat extends UnicastRemoteObject implements IRoomChat {
     // ArrayList<String> users = new ArrayList<String>();
     String roomName;
     static IUserChat obj;
-    private HashMap<String, IUserChat> users = new HashMap<>();
+    //private HashMap<String, IUserChat> users = new HashMap<>();
+    private TreeMap userList = new TreeMap();
 
     RoomChat(String nome) throws RemoteException {
         roomName = nome;

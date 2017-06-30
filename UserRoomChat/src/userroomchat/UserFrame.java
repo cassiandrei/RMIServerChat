@@ -12,11 +12,13 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import remoto.IServerRoomChat;
 import javax.swing.JOptionPane;
 import remoto.IRoomChat;
+import remoto.IUserChat;
 import static userroomchat.UserChat.IPServer;
 import static userroomchat.UserChat.obj;
 
@@ -26,8 +28,10 @@ import static userroomchat.UserChat.obj;
  */
 public class UserFrame extends javax.swing.JFrame {
 
-    public ArrayList<String> roomList;
-    public IServerRoomChat obj;
+    public TreeMap<String, IRoomChat> roomList;
+    public IServerRoomChat iServer;
+    public IUserChat iUsr;
+    public IRoomChat iRoom;
     public ArrayList<IRoomChat> objRooms = new ArrayList<IRoomChat>();
     public UserChat usr;
     static Registry registry;
@@ -35,14 +39,14 @@ public class UserFrame extends javax.swing.JFrame {
     public String usrChat;
     IRoomChat room=null;
 
-    public UserFrame(ArrayList<String> roomList, IServerRoomChat obj, String IPServer) throws RemoteException, AlreadyBoundException {
+    public UserFrame(TreeMap<String, IRoomChat> roomList, IServerRoomChat iServer, String IPServer) throws RemoteException, AlreadyBoundException {
         this.usr = new UserChat();
         this.roomList = roomList;
-        this.obj = obj;
+        this.iServer = iServer;
         this.IPServer = IPServer;
         initComponents();
         if (roomList != null) {
-            for (String roomNames1 : roomList) { // adiciono a lista de salas para o jComboBox
+            for (String roomNames1 : roomList.keySet()) { // adiciono a lista de salas para o jComboBox
                 listaSalas.addItem(roomNames1);
             }
         }
@@ -175,9 +179,9 @@ public class UserFrame extends javax.swing.JFrame {
                 registry = LocateRegistry.getRegistry(2020);
                 this.room = (IRoomChat) registry.lookup((String)listaSalas.getSelectedItem());
                 System.out.println("USER: "+ usr.usrName);
-                room.joinRoom((String)usr.usrName);
+                room.joinRoom((String)usr.usrName,iUsr);
                 objRooms.add(room);
-                atualiza(usrChat);
+                //deliverToGUI(usrChat);
             } catch (RemoteException | NotBoundException ex) {
                 Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -191,9 +195,9 @@ public class UserFrame extends javax.swing.JFrame {
             registry = LocateRegistry.getRegistry(2020);
             //usr = new UserChat();
             //registry.bind(usr.usrName, this.usr);
-            obj.createRoom(roomName);
-            roomList.add(roomName);
-            atualiza(usrChat);
+            iServer.createRoom(roomName);
+            roomList.put(roomName,iRoom);
+            //deliverToGUI(usrChat);
         } catch (RemoteException ex) {
             Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -204,7 +208,7 @@ public class UserFrame extends javax.swing.JFrame {
          try {
             registry = LocateRegistry.getRegistry(2020); // host do user ao invés de IPServer
             this.room = (IRoomChat) registry.lookup((String)listaSalas.getSelectedItem());
-            this.room.sendMsg(usr.usrName, newMsg.getText());
+            //this.room.sendMsg(usr.usrName, newMsg.getText());
             newMsg.removeAll();
         } catch (NotBoundException | RemoteException e) {
             System.out.println("erro:" + e);
@@ -251,12 +255,14 @@ public class UserFrame extends javax.swing.JFrame {
         });
     }
 
-    public void atualiza(String usrChat) {
+    public void deliverToGUI(String senderUsrName, String msg) {
         chat.removeAll();
-        chat.insert(usrChat,0);
+        chat.insert(senderUsrName + ": " + msg + "\n",0);
         listaSalas.removeAllItems();
-        for (int i = 0; i < roomList.size(); i++) {
-            listaSalas.addItem(roomList.get(i));
+        if (roomList != null) {
+            for (String roomNames1 : roomList.keySet()) { // adiciono a lista de salas para o jComboBox
+                listaSalas.addItem(roomNames1);
+            }
         }
     }
 

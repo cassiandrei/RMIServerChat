@@ -12,6 +12,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.TreeMap;
 import javax.swing.JOptionPane;
 import remoto.*;
 
@@ -25,8 +26,8 @@ public class UserChat extends UnicastRemoteObject implements IUserChat {
     static String usrName;
     static IServerRoomChat obj;
     static Registry registry;
-    public static ArrayList<String> roomList;
-    static String usrChat;
+    public static TreeMap<String, IRoomChat> roomList;
+    //static String usrChat;
     static UserFrame userFrame;
     public static String IPServer;
     
@@ -51,10 +52,13 @@ public class UserChat extends UnicastRemoteObject implements IUserChat {
     }
 
     @Override
-    public void deliverMsg(String senderName, String msg) {
-       usrChat = senderName + ": " + msg + "\n";
-       userFrame.atualiza(usrChat);
+    public void deliverMsg(String senderName, String msg, Integer[][] clockMatrix) {
+       userFrame.deliverToGUI(senderName, msg);
         System.out.println("Usuario recebeu");
     }
-
+    
+    @Override
+    public void updateUserList(TreeMap<String, IUserChat> userList){
+        
+    }
 }

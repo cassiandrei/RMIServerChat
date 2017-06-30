@@ -13,6 +13,6 @@ import java.util.TreeMap;
  * @author cassiano
  */ 
 public interface IUserChat extends java.rmi.Remote{
-    public void deliverMsg(String senderName, String msg, Integer[20][20] clockMatrix) throws RemoteException;
-    public void updateUserList(TreeMap<[String, IUserChat]> userList);
+    public void deliverMsg(String senderUsrName, String msg, Integer[][] clockMatrix) throws RemoteException;
+    public void updateUserList(TreeMap<String, IUserChat> userList) throws RemoteException;
 }

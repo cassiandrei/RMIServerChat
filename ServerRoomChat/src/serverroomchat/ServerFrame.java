@@ -118,6 +118,7 @@ public class ServerFrame extends javax.swing.JFrame {
     }
 
     public void atualiza(){
+        listaSalas.removeAllItems();
         Set set = salas.entrySet();
         // Get an iterator
         Iterator i = set.iterator();

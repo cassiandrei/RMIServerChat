@@ -5,13 +5,11 @@
  */
 package userroomchat;
 
-import java.rmi.AccessException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -22,8 +20,6 @@ import remoto.IServerRoomChat;
 import javax.swing.JOptionPane;
 import remoto.IRoomChat;
 import remoto.IUserChat;
-import static userroomchat.UserChat.IPServer;
-import static userroomchat.UserChat.iServer;
 
 /**
  *
@@ -33,13 +29,13 @@ public class UserFrame extends javax.swing.JFrame {
 
     public TreeMap<String, IRoomChat> roomList;
     public IServerRoomChat iServer;
-  //  public ArrayList<IRoomChat> objRooms = new ArrayList<IRoomChat>();
+    //  public ArrayList<IRoomChat> objRooms = new ArrayList<IRoomChat>();
     public IUserChat iUsr;
     public UserChat usr;
     static Registry registry;
     public String IPServer;
     public String usrChat;
-    IRoomChat room=null;
+    IRoomChat room = null;
 
     public UserFrame(TreeMap<String, IRoomChat> roomList, IServerRoomChat iServer, String IPServer) throws RemoteException, AlreadyBoundException {
         this.usr = new UserChat();
@@ -48,6 +44,7 @@ public class UserFrame extends javax.swing.JFrame {
         this.iServer = iServer;
         this.IPServer = IPServer;
         initComponents();
+        this.setTitle(usr.usrName);
         if (roomList != null) {
             for (String roomNames1 : roomList.keySet()) { // adiciono a lista de salas para o jComboBox
                 listaSalas.addItem(roomNames1);
@@ -71,13 +68,14 @@ public class UserFrame extends javax.swing.JFrame {
         listaSalas = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         userJoinButton = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        userCreateButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         chat = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         newMsg = new javax.swing.JTextArea();
         usrSend = new javax.swing.JButton();
+        userLeaveButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -90,8 +88,8 @@ public class UserFrame extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("Create Room");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        userCreateButton.setText("Create Room");
+        userCreateButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 userCreateRoom(evt);
             }
@@ -115,29 +113,20 @@ public class UserFrame extends javax.swing.JFrame {
             }
         });
 
+        userLeaveButton.setText("Leave");
+        userLeaveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                userLeave(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(172, 172, 172)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(285, 285, 285)
-                        .addComponent(jLabel2)))
-                .addContainerGap(298, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(listaSalas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(35, 35, 35)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
-                            .addComponent(userJoinButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(22, 22, 22))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jScrollPane1)
                         .addContainerGap())
@@ -145,20 +134,41 @@ public class UserFrame extends javax.swing.JFrame {
                         .addComponent(jScrollPane2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(usrSend)
-                        .addContainerGap())))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(162, 162, 162)
+                                        .addComponent(jLabel1))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(275, 275, 275)
+                                        .addComponent(jLabel2)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 148, Short.MAX_VALUE)
+                                .addComponent(userLeaveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(listaSalas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(35, 35, 35)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(userCreateButton, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+                                    .addComponent(userJoinButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(22, 22, 22))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel1)
+                .addGap(12, 12, 12)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1)
+                    .addComponent(userLeaveButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(listaSalas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(userJoinButton))
-                .addGap(18, 18, 18)
-                .addComponent(jButton2)
-                .addGap(9, 9, 9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(userCreateButton)
+                .addGap(21, 21, 21)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -180,14 +190,21 @@ public class UserFrame extends javax.swing.JFrame {
             Registry registry = null;
             try {
                 registry = LocateRegistry.getRegistry(2020);
-                this.room = (IRoomChat) registry.lookup((String)listaSalas.getSelectedItem());
-                System.out.println("USER: "+ usr.usrName);
-                usr.ID = room.joinRoom((String)usr.usrName,iUsr);
+                this.room = (IRoomChat) registry.lookup((String) listaSalas.getSelectedItem());
+                System.out.println("USER: " + usr.usrName);
+                usr.userList = null;
+                usr.ID = room.joinRoom((String) usr.usrName, iUsr);
                 //objRooms.add(room);
                 //deliverToGUI(usrChat);
             } catch (RemoteException | NotBoundException ex) {
                 Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+        this.setTitle(usr.usrName + " - Sala: " + (String) listaSalas.getSelectedItem());
+        try {
+            atualiza();
+        } catch (RemoteException ex) {
+            Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_userJoin
 
@@ -199,9 +216,9 @@ public class UserFrame extends javax.swing.JFrame {
             //usr = new UserChat();
             //registry.bind(usr.usrName, this.usr);
             iServer.createRoom(roomName);
-            roomList.put(roomName,room);
+            roomList.put(roomName, room);
             atualiza();
-            
+
         } catch (RemoteException ex) {
             Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -212,20 +229,38 @@ public class UserFrame extends javax.swing.JFrame {
         //registry = LocateRegistry.getRegistry(2020); // host do user ao invés de IPServer
         //this.room = (IRoomChat) registry.lookup((String)listaSalas.getSelectedItem());
         //this.room.sendMsg(usr.usrName, newMsg.getText());
-        Integer [][] matriz = null;
+        Integer[][] matriz = null;
         Set<String> lista = usr.userList.keySet();
-        for(String nome:lista){
-            try {
+        try {
+            for (String nome : lista) {
                 usr.userList.get(nome).deliverMsg(usr.usrName, newMsg.getText(), matriz);
-            } catch (RemoteException ex) {
+            }
+            atualiza();
+        } catch (RemoteException ex) {
+            Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        newMsg.setText(null);
+    }//GEN-LAST:event_userSend
+
+    private void userLeave(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userLeave
+        if (roomList.size() > 0) {
+            Registry registry = null;
+            try {
+                registry = LocateRegistry.getRegistry(2020);
+                this.room = (IRoomChat) registry.lookup((String) listaSalas.getSelectedItem());
+                room.leaveRoom((String) usr.usrName);
+                usr.userList = null;
+            } catch (RemoteException | NotBoundException ex) {
                 Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
-        
-        newMsg.removeAll();
-        
-    }//GEN-LAST:event_userSend
+        this.setTitle(usr.usrName);
+        try {
+            atualiza();
+        } catch (RemoteException ex) {
+            Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_userLeave
 
     /**
      * @param args the command line arguments
@@ -269,34 +304,34 @@ public class UserFrame extends javax.swing.JFrame {
 
     public void deliverToGUI(String senderUsrName, String msg) {
         chat.removeAll();
-        chat.insert(senderUsrName + ": " + msg + "\n",0);
+        chat.insert(senderUsrName + ": " + msg + "\n", 0);
     }
-    
-    public void atualiza(){
+
+    public void atualiza() throws RemoteException {
         listaSalas.removeAllItems();
- 
+        roomList = iServer.getRooms();
         Set set = roomList.entrySet();
         // Get an iterator
         Iterator i = set.iterator();
         // Display elements
-        while(i.hasNext()) {
-            Map.Entry sala = (Map.Entry)i.next();
+        while (i.hasNext()) {
+            Map.Entry sala = (Map.Entry) i.next();
             listaSalas.addItem(sala.getKey().toString());
         }
     }
 
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea chat;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JComboBox<String> listaSalas;
     private javax.swing.JTextArea newMsg;
+    private javax.swing.JButton userCreateButton;
     private javax.swing.JButton userJoinButton;
+    private javax.swing.JButton userLeaveButton;
     private javax.swing.JButton usrSend;
     // End of variables declaration//GEN-END:variables
 }

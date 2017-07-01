@@ -13,6 +13,9 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,7 +70,7 @@ public class ServerRoomChat extends UnicastRemoteObject implements IServerRoomCh
         }
         roomList.put(roomName, room);
         System.out.println("Sala Criada:" + roomName);
-        srvFrame.atualiza();
+        srvFrame.atualiza();       
     }
    
     

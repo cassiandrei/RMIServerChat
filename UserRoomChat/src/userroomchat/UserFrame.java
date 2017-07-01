@@ -29,7 +29,6 @@ public class UserFrame extends javax.swing.JFrame {
 
     public TreeMap<String, IRoomChat> roomList;
     public IServerRoomChat iServer;
-    //  public ArrayList<IRoomChat> objRooms = new ArrayList<IRoomChat>();
     public IUserChat iUsr;
     public UserChat usr;
     static Registry registry;
@@ -76,6 +75,7 @@ public class UserFrame extends javax.swing.JFrame {
         newMsg = new javax.swing.JTextArea();
         usrSend = new javax.swing.JButton();
         userLeaveButton = new javax.swing.JButton();
+        userAtualizaButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -120,6 +120,13 @@ public class UserFrame extends javax.swing.JFrame {
             }
         });
 
+        userAtualizaButton.setText("Atualiza");
+        userAtualizaButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                userAtualiza(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -148,8 +155,14 @@ public class UserFrame extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 148, Short.MAX_VALUE)
                                 .addComponent(userLeaveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(listaSalas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(35, 35, 35)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(listaSalas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGap(35, 35, 35))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(userAtualizaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(148, 148, 148)))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(userCreateButton, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
                                     .addComponent(userJoinButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -167,7 +180,9 @@ public class UserFrame extends javax.swing.JFrame {
                     .addComponent(listaSalas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(userJoinButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(userCreateButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(userCreateButton)
+                    .addComponent(userAtualizaButton))
                 .addGap(21, 21, 21)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -194,8 +209,6 @@ public class UserFrame extends javax.swing.JFrame {
                 System.out.println("USER: " + usr.usrName);
                 usr.userList = null;
                 usr.ID = room.joinRoom((String) usr.usrName, iUsr);
-                //objRooms.add(room);
-                //deliverToGUI(usrChat);
             } catch (RemoteException | NotBoundException ex) {
                 Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -213,8 +226,6 @@ public class UserFrame extends javax.swing.JFrame {
         Registry registry = null;
         try {
             registry = LocateRegistry.getRegistry(2020);
-            //usr = new UserChat();
-            //registry.bind(usr.usrName, this.usr);
             iServer.createRoom(roomName);
             roomList.put(roomName, room);
             atualiza();
@@ -226,9 +237,6 @@ public class UserFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_userCreateRoom
 
     private void userSend(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userSend
-        //registry = LocateRegistry.getRegistry(2020); // host do user ao invés de IPServer
-        //this.room = (IRoomChat) registry.lookup((String)listaSalas.getSelectedItem());
-        //this.room.sendMsg(usr.usrName, newMsg.getText());
         Integer[][] matriz = null;
         Set<String> lista = usr.userList.keySet();
         try {
@@ -261,6 +269,14 @@ public class UserFrame extends javax.swing.JFrame {
             Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_userLeave
+
+    private void userAtualiza(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userAtualiza
+        try {
+            atualiza();
+        } catch (RemoteException ex) {
+            Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_userAtualiza
 
     /**
      * @param args the command line arguments
@@ -329,6 +345,7 @@ public class UserFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JComboBox<String> listaSalas;
     private javax.swing.JTextArea newMsg;
+    private javax.swing.JButton userAtualizaButton;
     private javax.swing.JButton userCreateButton;
     private javax.swing.JButton userJoinButton;
     private javax.swing.JButton userLeaveButton;

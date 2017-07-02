@@ -205,15 +205,21 @@ public class UserFrame extends javax.swing.JFrame {
             Registry registry = null;
             try {
                 registry = LocateRegistry.getRegistry(2020);
+                if (room != null) {
+                    room.leaveRoom((String) usr.usrName);
+                    usr.userList = null;
+                }
                 this.room = (IRoomChat) registry.lookup((String) listaSalas.getSelectedItem());
-                System.out.println("USER: " + usr.usrName);
-                usr.userList = null;
                 usr.ID = room.joinRoom((String) usr.usrName, iUsr);
+                for (int i = 0; i < usr.clockMatrix.length; i++) {
+                    usr.clockMatrix[usr.ID][i] = 0;
+                }
+                System.out.println("Entrou USER: " + usr.usrName + " - Na sala: " + (String) listaSalas.getSelectedItem());
             } catch (RemoteException | NotBoundException ex) {
                 Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
+            this.setTitle(usr.usrName + " - Sala: " + (String) listaSalas.getSelectedItem());
         }
-        this.setTitle(usr.usrName + " - Sala: " + (String) listaSalas.getSelectedItem());
         try {
             atualiza();
         } catch (RemoteException ex) {
@@ -237,36 +243,36 @@ public class UserFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_userCreateRoom
 
     private void userSend(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userSend
-        Integer[][] matriz = null;
-        Set<String> lista = usr.userList.keySet();
-        try {
-            for (String nome : lista) {
-                usr.userList.get(nome).deliverMsg(usr.usrName, newMsg.getText(), matriz);
+        if (room != null) {
+            Set<String> lista = usr.userList.keySet();
+            try {
+                for (String nome : lista) {
+                    usr.userList.get(nome).deliverMsg(usr.usrName, newMsg.getText(), usr.ID, usr.clockMatrix[usr.ID]);
+                }
+                atualiza();
+            } catch (RemoteException ex) {
+                Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
-            atualiza();
-        } catch (RemoteException ex) {
-            Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
+            newMsg.setText(null);
         }
-        newMsg.setText(null);
     }//GEN-LAST:event_userSend
 
     private void userLeave(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userLeave
-        if (roomList.size() > 0) {
+        if (room != null) {
             Registry registry = null;
             try {
                 registry = LocateRegistry.getRegistry(2020);
-                this.room = (IRoomChat) registry.lookup((String) listaSalas.getSelectedItem());
+                //this.room = (IRoomChat) registry.lookup((String) listaSalas.getSelectedItem());
                 room.leaveRoom((String) usr.usrName);
                 usr.userList = null;
-            } catch (RemoteException | NotBoundException ex) {
+                room = null;
+                usr.ID = null;
+                usr.clockMatrix = new Integer[20][20];
+                atualiza();
+            } catch (RemoteException ex) {
                 Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
-        this.setTitle(usr.usrName);
-        try {
-            atualiza();
-        } catch (RemoteException ex) {
-            Logger.getLogger(UserFrame.class.getName()).log(Level.SEVERE, null, ex);
+            this.setTitle(usr.usrName);
         }
     }//GEN-LAST:event_userLeave
 

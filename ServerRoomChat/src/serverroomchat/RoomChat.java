@@ -22,7 +22,7 @@ public class RoomChat extends UnicastRemoteObject implements IRoomChat {
     String roomName;
     static int ID = 0;
     static IUserChat obj;
-    public TreeMap<String, IUserChat> userList = new TreeMap<String, IUserChat>();
+    public TreeMap<String, IUserChat> userList = new TreeMap();
 
     RoomChat(String nome) throws RemoteException {
         roomName = nome;
